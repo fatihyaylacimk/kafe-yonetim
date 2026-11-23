@@ -11,10 +11,14 @@
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="preload" as="font" href="assets/fonts/instrument-serif.woff" type="font/woff" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="menu-tools.css">
   <script defer src="menu-data.js"></script>
+  <script defer src="menu-options.js"></script>
   <script defer src="assets/track-data.js"></script>
   <script defer src="assets/vendor/qrcode.js"></script>
   <script defer src="mixer.js"></script>
+  <script defer src="menu-tools.js"></script>
+  <script defer src="weekly-poll.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -79,9 +83,13 @@
           <p id="audio-error" class="player-error" role="status" hidden></p>
         </div>
 
-        <button type="button" id="open-mixer" class="mixer-entry" aria-haspopup="dialog" hidden>
-          <span class="mixer-icon" aria-hidden="true"></span><span data-copy="mixer">Mutfak Mikseri</span>
-        </button>
+        <div class="dish-tools">
+          <button type="button" id="open-mixer" class="mixer-entry" aria-haspopup="dialog" hidden>
+            <span class="mixer-icon" aria-hidden="true"></span><span data-copy="mixer">Mutfak Mikseri</span>
+          </button>
+          <button type="button" id="open-alternatives" class="dish-tool" aria-haspopup="dialog" data-tool-copy="similar">Buna benzer ama…</button>
+          <button type="button" id="open-drink" class="dish-tool" aria-haspopup="dialog" data-tool-copy="customize" hidden>İçeceğini ayarla</button>
+        </div>
 
         <div class="feature-actions">
           <div class="dish-navigation" role="group" data-label="browse">
@@ -100,7 +108,10 @@
     <section id="tastings" class="tasting-section" aria-labelledby="tasting-heading">
       <div class="tasting-header">
         <h2 id="tasting-heading" data-copy="tastings">Tadım seçkileri</h2>
-        <button type="button" id="open-showcase" class="filter-button" data-copy="openShowcase">Vitrin modu</button>
+        <div class="tasting-tools">
+          <button type="button" id="open-budget" class="filter-button tasting-budget" aria-haspopup="dialog" data-tool-copy="budgetTitle">Bütçene göre sofra kur</button>
+          <button type="button" id="open-showcase" class="filter-button" data-copy="openShowcase">Vitrin modu</button>
+        </div>
       </div>
       <div id="tasting-grid" class="tasting-grid"></div>
     </section>
@@ -123,10 +134,22 @@
           </label>
         </div>
       </div>
+      <a class="weekly-link" href="#weekly" data-vote-copy="jump">Haftanın oylaması</a>
       <div id="filters" class="filters" role="group" data-label="categories"></div>
       <div id="menu-groups"></div>
       <p id="menu-empty" class="menu-empty" data-copy="noItems" hidden>Aramana uygun ürün bulunamadı.</p>
       <noscript><p>Menüyü açmak için JavaScript’i etkinleştirin. Enable JavaScript to open the menu.</p></noscript>
+    </section>
+
+    <section class="weekly-section" id="weekly" aria-labelledby="weekly-title">
+      <div id="weekly-winner" hidden></div>
+      <div class="weekly-header">
+        <h2 id="weekly-title" data-vote-copy="title">Haftaya menüye ne girsin?</h2>
+        <time id="weekly-deadline" hidden></time>
+      </div>
+      <p id="weekly-status" class="weekly-status" role="status"></p>
+      <div class="weekly-grid" id="weekly-grid"></div>
+      <button type="button" id="weekly-refresh" class="filter-button" data-vote-copy="refresh" hidden>Oyları yenile</button>
     </section>
 
     <footer class="footer">
@@ -223,6 +246,68 @@
       </button>
     </div>
   </template>
+
+  <dialog id="alternatives" class="menu-tool-dialog" aria-labelledby="alternatives-title">
+    <header class="menu-tool-header">
+      <h2 id="alternatives-title" data-tool-copy="similar">Buna benzer ama…</h2>
+      <button type="button" class="tool-close" data-tool-copy="close" data-tool-close>Kapat</button>
+    </header>
+    <p id="alt-source" class="tool-subtitle"></p>
+    <div class="alt-modes" role="group" aria-labelledby="alternatives-title">
+      <button type="button" data-alt-mode="fresh" aria-pressed="true" data-tool-copy="fresher">Daha ferah</button>
+      <button type="button" data-alt-mode="rich" aria-pressed="false" data-tool-copy="richer">Daha yoğun</button>
+      <button type="button" data-alt-mode="price" aria-pressed="false" data-tool-copy="cheaper">Daha uygun fiyatlı</button>
+    </div>
+    <div id="alt-results" class="alt-results" aria-live="polite"></div>
+  </dialog>
+
+  <dialog id="budget" class="menu-tool-dialog" aria-labelledby="budget-title">
+    <header class="menu-tool-header">
+      <h2 id="budget-title" data-tool-copy="budgetTitle">Bütçene göre sofra kur</h2>
+      <button type="button" class="tool-close" data-tool-copy="close" data-tool-close>Kapat</button>
+    </header>
+    <form class="budget-form" id="budget-form" novalidate>
+      <label><span data-tool-copy="amount">Bütçe (€)</span><input id="budget-amount" inputmode="decimal" maxlength="7" value="12" required></label>
+      <label><span data-tool-copy="courses">Seçki</span><select id="budget-courses">
+        <option value="meal" data-tool-copy="meal">Ana yemek ve içecek</option>
+        <option value="sweet" data-tool-copy="sweet">Tatlı ve içecek</option>
+        <option value="full" data-tool-copy="full">Ana yemek, içecek ve tatlı</option>
+      </select></label>
+      <button class="tool-primary" type="submit" data-tool-copy="findMenu">Sofra öner</button>
+    </form>
+    <p id="budget-message" class="tool-message" role="status" hidden></p>
+    <div id="budget-results" class="budget-results" aria-live="polite"></div>
+  </dialog>
+
+  <dialog id="drink-builder" class="menu-tool-dialog" aria-labelledby="drink-builder-title">
+    <header class="menu-tool-header">
+      <h2 id="drink-builder-title" data-tool-copy="customize">İçeceğini ayarla</h2>
+      <button type="button" class="tool-close" data-tool-copy="close" data-tool-close>Kapat</button>
+    </header>
+    <div id="drink-controls" class="drink-builder">
+      <div class="drink-stage" id="drink-stage" aria-hidden="true">
+        <div class="drink-glass"><div class="drink-liquid"></div><i></i><i></i><i></i></div>
+      </div>
+      <div class="drink-form">
+        <h3 id="builder-name"></h3>
+        <label id="builder-ice-row"><span data-tool-copy="ice">Buz</span><select id="builder-ice">
+          <option value="regular" data-tool-copy="iceRegular">Normal buz</option>
+          <option value="light" data-tool-copy="iceLight">Az buz</option>
+          <option value="none" data-tool-copy="iceNone">Buzsuz</option>
+        </select></label>
+        <label id="builder-shots-row"><span data-tool-copy="shots">Espresso shot</span><select id="builder-shots"></select></label>
+        <label id="builder-milk-row"><span data-tool-copy="milk">Süt seçimi</span><select id="builder-milk"></select></label>
+        <div class="builder-total"><span data-tool-copy="total">Toplam</span><strong id="builder-total" aria-live="polite"></strong></div>
+        <button type="button" class="tool-primary" id="builder-show" data-tool-copy="showWaiter">Garsona göster</button>
+      </div>
+    </div>
+    <div id="builder-slip" class="builder-slip" hidden>
+      <h3 id="slip-name"></h3>
+      <ul id="slip-options"></ul>
+      <strong id="slip-total"></strong>
+      <button class="tool-close" type="button" id="builder-edit" data-tool-copy="editDrink">Seçimi düzenle</button>
+    </div>
+  </dialog>
 
   <dialog id="showcase" class="showcase" aria-labelledby="showcase-title">
     <div class="showcase-inner">

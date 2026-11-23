@@ -145,7 +145,12 @@
     en: new Intl.NumberFormat("en-IE", currency),
   };
   const priceText = amount => priceFormatters[state.lang].format(amount);
-  const mixer = createKitchenMixer({ productById, foodPath, priceText, pauseTrack });
+  const weekly = createWeeklyPoll({ byId, foodPath, priceText, onPlay: pauseTrack });
+  const mixer = createKitchenMixer({ productById, foodPath, priceText, pauseTrack: () => {
+    pauseTrack();
+    weekly.pause();
+  } });
+  const menuTools = createMenuTools({ catalog: products, byId, foodPath, priceText, openProduct: openToolProduct });
 
   function searchable(value) {
     return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/\p{M}/gu, "").replaceAll("ı", "i");
@@ -237,6 +242,7 @@
     story.download = "Sofra-FM-" + product.id + ".mp4";
     story.setAttribute("aria-label", text("story") + " · " + name);
     openMixer.hidden = !mixer.has(product.id);
+    byId("open-drink").hidden = !menuTools.hasRecipe(product.id);
     document.title = name + " · Sofra FM";
     find('meta[name="description"]').content = inLanguage(product.detail);
     audioError.textContent = text("audioError");
@@ -296,6 +302,7 @@
     if (mixer.isOpen()) {
       return;
     }
+    weekly.pause();
     if (audio.error) {
       loadTrack();
     }
@@ -501,6 +508,8 @@
     musicFilter.value = state.music;
     tastingGrid.replaceChildren(...Array.from(tastingById.values(), createTastingCard));
     mixer.setLanguage(state.lang);
+    menuTools.setLanguage(state.lang);
+    weekly.setLanguage(state.lang);
     setProductCopy();
     renderMenu();
   }
@@ -618,6 +627,7 @@
   }
 
   function openShowcase() {
+    weekly.pause();
     display.previousMute = audio.muted;
     display.rotating = true;
     display.sound = false;
@@ -730,6 +740,12 @@
     focus.focus({ preventScroll: true });
   }
 
+  function openToolProduct(id) {
+    setTasting(null);
+    selectProduct(productById.get(id), !audio.paused);
+    goToFeature(byId("dish-name"));
+  }
+
   document.querySelectorAll("[data-lang]").forEach(button => button.addEventListener("click", () => {
     if (state.lang !== button.dataset.lang) {
       state.lang = button.dataset.lang;
@@ -796,6 +812,8 @@
   });
 
   openMixer.addEventListener("click", () => mixer.open(state.product.id));
+  byId("open-alternatives").addEventListener("click", () => menuTools.showAlternatives(state.product));
+  byId("open-drink").addEventListener("click", () => menuTools.buildDrink(state.product));
   byId("main-play").addEventListener("click", togglePlayer);
   byId("mini-play").addEventListener("click", () => {
     const currentCardPlay = groups.querySelector('[data-play="' + state.product.id + '"]');

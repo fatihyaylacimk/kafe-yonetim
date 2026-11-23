@@ -76,6 +76,10 @@ SCORES = {
     "salatalik-murver-soda": (101, "bossa", "rhodes", "nylon", [(60, MAJOR), (55, SIXTH), (57, MINOR), (53, MAJOR)], (1, 3, 0, 4, 2, 1, 3, 2)),
     "nar-greyfurt-kokteyli": (112, "funk", "pluck", "rhodes", [(53, MINOR), (56, MAJOR), (58, MINOR), (60, DOMINANT)], (3, 2, 4, 0, 1, 4, 2, 0)),
     "fistikli-milkshake": (91, "broken", "rhodes", "vibes", [(55, MAJOR), (52, MINOR), (57, MINOR), (62, DOMINANT)], (0, 1, 4, 2, 1, 3, 4, 2)),
+    "kan-portakali-biberiye": (110, "bossa", "nylon", "pluck", [(50, SIXTH), (55, MAJOR), (52, MINOR), (57, DOMINANT)], (3, 1, 2, 0, 4, 3, 1, 2)),
+    "bergamot-cold-brew": (106, "broken", "rhodes", "vibes", [(53, MINOR), (58, MINOR), (56, MAJOR), (60, DOMINANT)], (2, 0, 4, 3, 2, 1, 0, 4)),
+    "armut-adacayi-fizz": (102, "bossa", "nylon", "vibes", [(52, MAJOR), (57, SIXTH), (54, MINOR), (59, DOMINANT)], (0, 2, 4, 1, 2, 3, 4, 2)),
+    "balli-susam-latte": (89, "funk", "rhodes", "nylon", [(55, MINOR), (58, MAJOR), (63, MAJOR), (62, DOMINANT)], (1, 2, 3, 0, 2, 4, 2, 1)),
 }
 
 # Beat positions in a four-beat bar.
