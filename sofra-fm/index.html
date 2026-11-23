@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f4ec">
+  <meta name="description" content="Sofra FM. Her tabağın kendine ait bir parçası var. A restaurant menu with an original soundtrack for every dish.">
+  <meta property="og:title" content="Sofra FM · Menüyü dinle / Listen to the menu">
+  <meta property="og:description" content="Yemek, tatlı, içecek ve taze seçenekler. Her ürünün kendi müziğiyle.">
+  <title>Sofra FM · Menüyü dinle</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="preload" as="font" href="assets/fonts/instrument-serif.woff" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="menu-data.js"></script>
+  <script defer src="assets/track-data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#menu" data-copy="skip">Menüye geç</a>
+
+  <header class="topbar" id="top">
+    <div class="shell topbar-inner">
+      <a class="wordmark" href="#top" aria-label="Sofra FM">
+        <span class="brand-disc" aria-hidden="true"></span>
+        <span>Sofra<span class="wordmark-fm">FM</span></span>
+      </a>
+      <div class="topbar-actions">
+        <a class="menu-link" href="#menu" data-copy="menuLink">Menü</a>
+        <div class="language" role="group" data-label="language">
+          <button type="button" data-lang="tr" lang="tr" aria-label="Türkçe" aria-pressed="true">TR</button>
+          <button type="button" data-lang="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="feature" aria-labelledby="dish-name">
+      <figure class="feature-photo" id="feature-photo">
+        <img id="dish-image" src="assets/food/koz-burger.webp" alt="Köz Burger" width="623" height="623" fetchpriority="high">
+        <figcaption id="dish-category">Ana yemekler</figcaption>
+      </figure>
+
+      <div class="feature-info">
+        <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span><span data-copy="tagline">Menüyü dinle</span></p>
+        <h1 id="dish-name">Köz Burger</h1>
+        <p class="dish-detail" id="dish-detail">Köz ateşinde iki dana köfte, erimiş cheddar, turşu ve kavrulmuş brioche ekmek.</p>
+        <p class="dish-price" id="dish-price">460 MKD</p>
+
+        <div class="player" id="player" role="group" data-label="player">
+          <div class="player-track">
+            <span class="record" aria-hidden="true">
+              <span class="record-label"><img id="record-image" src="assets/food/koz-burger.webp" alt="" width="28" height="28"></span>
+            </span>
+            <div class="track-info">
+              <p class="track-title" id="track-name">Köz Başında</p>
+              <p class="track-genre" id="track-genre">Lo-fi funk · 94 BPM</p>
+            </div>
+            <button type="button" class="play-button" id="main-play" data-play aria-label="Parçayı oynat"><span class="play-icon" aria-hidden="true"></span></button>
+          </div>
+
+          <div class="wave-control">
+            <div class="waveform" id="waveform" aria-hidden="true"></div>
+            <input type="range" id="seek" min="0" max="1" step="0.1" value="0" data-label="seek">
+          </div>
+
+          <div class="player-bottom">
+            <span id="time-elapsed">0:00</span>
+            <span class="player-mid"><button class="volume-button" type="button" id="mute" aria-pressed="false" data-label="mute"><span class="sound-icon" aria-hidden="true"></span></button></span>
+            <span id="time-total">0:00</span>
+          </div>
+          <audio id="audio" preload="none" loop></audio>
+          <p id="audio-error" class="player-error" role="status" hidden></p>
+        </div>
+
+        <div class="feature-actions">
+          <div class="dish-navigation" role="group" data-label="browse">
+            <button type="button" id="previous" class="arrow-button" data-label="previous"><span aria-hidden="true">←</span></button>
+            <span id="dish-position" class="dish-position" aria-live="polite">05 / 20</span>
+            <button type="button" id="next" class="arrow-button" data-label="next"><span aria-hidden="true">→</span></button>
+          </div>
+          <button type="button" id="share" class="share-button"><span data-copy="share">Ürünü paylaş</span><span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu" class="menu-section" aria-labelledby="menu-heading">
+      <div class="menu-title-row">
+        <h2 id="menu-heading" data-copy="menuHeading">Tam menü</h2>
+        <span id="item-count" class="item-count" aria-live="polite"></span>
+      </div>
+      <div id="filters" class="filters" role="group" data-label="categories"></div>
+      <div id="menu-groups"></div>
+      <noscript><p>Menüyü açmak için JavaScript’i etkinleştirin. Enable JavaScript to open the menu.</p></noscript>
+    </section>
+
+    <footer class="footer">
+      <a class="wordmark wordmark-small" href="#top" aria-label="Sofra FM">
+        <span class="brand-disc" aria-hidden="true"></span><span>Sofra<span class="wordmark-fm">FM</span></span>
+      </a>
+      <a href="#top" class="back-top"><span data-copy="top">Yukarı çık</span><span aria-hidden="true">↑</span></a>
+    </footer>
+  </main>
+
+  <aside id="mini-player" class="mini-player" data-label="player" hidden>
+    <img id="mini-image" src="assets/food/koz-burger.webp" alt="" width="43" height="43">
+    <button type="button" id="mini-track" class="mini-track" data-label="openPlayer"><span id="mini-name">Köz Başında</span><span id="mini-dish">Köz Burger</span></button>
+    <button type="button" class="play-button" id="mini-play" data-play aria-label="Parçayı duraklat"><span class="play-icon" aria-hidden="true"></span></button>
+  </aside>
+
+  <template id="card-template">
+    <article class="product-card">
+      <button type="button" class="product-image-button"><img alt="" width="623" height="623" loading="lazy" decoding="async"></button>
+      <div class="product-content">
+        <div class="product-title-row">
+          <h4 class="product-name"><button type="button"></button></h4>
+          <span class="product-price"></span>
+        </div>
+        <p class="product-detail"></p>
+        <div class="product-track">
+          <span class="product-track-name"></span>
+          <button type="button" class="play-button" data-play><span class="play-icon" aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <dialog id="share-dialog" class="share-dialog">
+    <form method="dialog">
+      <label for="share-url" data-copy="copyLabel">Ürün bağlantısı</label>
+      <input id="share-url" type="url" readonly>
+      <button type="submit" data-copy="close">Kapat</button>
+    </form>
+  </dialog>
+  <div id="status" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
