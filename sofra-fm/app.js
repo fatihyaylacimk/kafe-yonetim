@@ -13,7 +13,7 @@
       audioError: "Parça açılamadı. Tekrar oynatmayı dene.",
       copied: "Ürün bağlantısı kopyalandı.",
       position: (current, total) => total + " üründen " + current + ". ürün",
-      story: "Hikâye videosu", tastings: "Tadım seçkileri", tastingsLink: "Seçkiler",
+      story: "Hikâye videosu", mixer: "Mutfak Mikseri", tastings: "Tadım seçkileri", tastingsLink: "Seçkiler",
       listenTasting: "Seçkiyi dinle", pauseTasting: "Seçkiyi duraklat", shareTasting: "Seçkiyi paylaş",
       tastingLink: "Seçki bağlantısı", tastingCopied: "Seçki bağlantısı kopyalandı.",
       tastingTotal: "Seçki toplamı", musicStyle: "Müzik tarzı", musicAll: "Tüm tarzlar",
@@ -34,7 +34,7 @@
       audioError: "This track could not load. Try playing it again.",
       copied: "Dish link copied.",
       position: (current, total) => "Item " + current + " of " + total,
-      story: "Story video", tastings: "Tasting menus", tastingsLink: "Tastings",
+      story: "Story video", mixer: "Kitchen Mixer", tastings: "Tasting menus", tastingsLink: "Tastings",
       listenTasting: "Play tasting menu", pauseTasting: "Pause tasting menu", shareTasting: "Share tasting menu",
       tastingLink: "Tasting menu link", tastingCopied: "Tasting menu link copied.",
       tastingTotal: "Tasting menu total", musicStyle: "Music style", musicAll: "All styles",
@@ -117,6 +117,7 @@
   const musicFilter = byId("music-style");
   const tastingGrid = byId("tasting-grid");
   const story = byId("story");
+  const openMixer = byId("open-mixer");
   const showcase = byId("showcase");
   const wave = byId("waveform");
   const dishImage = byId("dish-image");
@@ -144,6 +145,7 @@
     en: new Intl.NumberFormat("en-IE", currency),
   };
   const priceText = amount => priceFormatters[state.lang].format(amount);
+  const mixer = createKitchenMixer({ productById, foodPath, priceText, pauseTrack });
 
   function searchable(value) {
     return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/\p{M}/gu, "").replaceAll("ı", "i");
@@ -234,6 +236,7 @@
     story.href = "assets/stories/" + product.id + ".mp4";
     story.download = "Sofra-FM-" + product.id + ".mp4";
     story.setAttribute("aria-label", text("story") + " · " + name);
+    openMixer.hidden = !mixer.has(product.id);
     document.title = name + " · Sofra FM";
     find('meta[name="description"]').content = inLanguage(product.detail);
     audioError.textContent = text("audioError");
@@ -290,6 +293,9 @@
   }
 
   async function playTrack() {
+    if (mixer.isOpen()) {
+      return;
+    }
     if (audio.error) {
       loadTrack();
     }
@@ -368,6 +374,12 @@
     card.querySelector(".product-image-button").setAttribute("aria-label", text("openDish")(inLanguage(product.name)));
     card.querySelector("img").src = foodPath(product.id);
     card.querySelector("[data-play]").dataset.play = product.id;
+    if (mixer.has(product.id)) {
+      const button = card.querySelector(".mixer-card-button");
+      button.querySelector(".mixer-card-label").textContent = text("mixer");
+      button.setAttribute("aria-label", text("mixer") + " · " + inLanguage(product.name));
+      button.hidden = false;
+    }
     return card;
   }
 
@@ -488,6 +500,7 @@
       new Option(inLanguage(style.name), style.id)));
     musicFilter.value = state.music;
     tastingGrid.replaceChildren(...Array.from(tastingById.values(), createTastingCard));
+    mixer.setLanguage(state.lang);
     setProductCopy();
     renderMenu();
   }
@@ -696,7 +709,7 @@
   }
 
   function finishTrack() {
-    if (!audio.ended) {
+    if (!audio.ended || mixer.isOpen()) {
       return;
     }
     if (showcase.open && display.rotating && display.sound) {
@@ -763,6 +776,10 @@
     const card = button?.closest(".product-card");
     if (card) {
       const product = productById.get(card.dataset.id);
+      if (button.classList.contains("mixer-card-button")) {
+        mixer.open(product.id);
+        return;
+      }
       const wasPlaying = !audio.paused;
       setTasting(null);
       if ("play" in button.dataset) {
@@ -778,6 +795,7 @@
     }
   });
 
+  openMixer.addEventListener("click", () => mixer.open(state.product.id));
   byId("main-play").addEventListener("click", togglePlayer);
   byId("mini-play").addEventListener("click", () => {
     const currentCardPlay = groups.querySelector('[data-play="' + state.product.id + '"]');

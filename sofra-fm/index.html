@@ -14,6 +14,7 @@
   <script defer src="menu-data.js"></script>
   <script defer src="assets/track-data.js"></script>
   <script defer src="assets/vendor/qrcode.js"></script>
+  <script defer src="mixer.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -77,6 +78,10 @@
           <audio id="audio" preload="none" loop></audio>
           <p id="audio-error" class="player-error" role="status" hidden></p>
         </div>
+
+        <button type="button" id="open-mixer" class="mixer-entry" aria-haspopup="dialog" hidden>
+          <span class="mixer-icon" aria-hidden="true"></span><span data-copy="mixer">Mutfak Mikseri</span>
+        </button>
 
         <div class="feature-actions">
           <div class="dish-navigation" role="group" data-label="browse">
@@ -151,6 +156,9 @@
           <span class="product-track-name"></span>
           <button type="button" class="play-button" data-play><span class="play-icon" aria-hidden="true"></span></button>
         </div>
+        <button type="button" class="mixer-entry mixer-card-button" aria-haspopup="dialog" hidden>
+          <span class="mixer-icon" aria-hidden="true"></span><span class="mixer-card-label"></span>
+        </button>
       </div>
     </article>
   </template>
@@ -172,6 +180,48 @@
         </div>
       </div>
     </article>
+  </template>
+
+  <dialog id="kitchen-mixer" class="kitchen-mixer" aria-labelledby="mixer-title">
+    <header class="mixer-header">
+      <h2 id="mixer-title" data-copy="mixer">Mutfak Mikseri</h2>
+      <button type="button" id="mixer-close" class="mixer-close" autofocus>
+        <span aria-hidden="true">×</span><span data-copy="close">Kapat</span>
+      </button>
+    </header>
+    <div id="mixer-products" class="mixer-products" role="group"></div>
+    <div class="mixer-stage">
+      <figure id="mixer-photo" class="mixer-photo" data-closeup="false">
+        <img id="mixer-plate" width="623" height="623" alt="">
+        <img id="mixer-prep" width="620" height="620" alt="" aria-hidden="true">
+        <figcaption>
+          <span id="mixer-scene" hidden></span>
+          <span class="mixer-dish-line"><span id="mixer-dish"></span><span id="mixer-price"></span></span>
+        </figcaption>
+      </figure>
+      <div class="mixer-console">
+        <div class="mixer-transport">
+          <p id="mixer-track"></p>
+          <button type="button" id="mixer-play" class="mixer-play">
+            <span class="play-icon" aria-hidden="true"></span><span id="mixer-play-label">Karışımı çal</span>
+          </button>
+        </div>
+        <div id="mixer-layers" role="group"></div>
+        <p class="mixer-hint" id="mixer-hint"></p>
+        <p id="mixer-status" class="mixer-status" role="status" hidden></p>
+      </div>
+    </div>
+  </dialog>
+
+  <template id="mixer-layer-template">
+    <div class="mixer-layer">
+      <label class="mixer-layer-label"></label>
+      <span class="mixer-level" aria-hidden="true"></span>
+      <input class="mixer-slider" type="range" min="0" max="100" step="1">
+      <button class="mixer-mute" type="button" aria-pressed="false">
+        <span class="sound-icon" aria-hidden="true"></span>
+      </button>
+    </div>
   </template>
 
   <dialog id="showcase" class="showcase" aria-labelledby="showcase-title">

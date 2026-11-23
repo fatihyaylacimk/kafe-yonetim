@@ -126,13 +126,14 @@ def move_into_octave(pitch, start):
     return start + (pitch - start) % 12
 
 
-def render(key, score, order):
+def compose_score(score, order, *, separate=False):
     bpm, style, chord_voice, lead_voice, progression, motif = score
     rng = np.random.default_rng(61 + order * 103)
     beat = 60 / bpm
     seconds = BARS * 4 * beat
     groove = GROOVES[style]
     mix = np.zeros((round(seconds * RATE), 2))
+    rhythm_signal, bass_signal, melody_signal = (np.zeros_like(mix) for _ in range(3)) if separate else (mix, mix, mix)
     percussion = drums(rng)
     rhythm = {"kick": .28, "snare": .10, "hat": .048}
     if style in ("bossa", "swing", "air"):
@@ -146,16 +147,16 @@ def render(key, score, order):
             for offset in groove[instrument]:
                 swing = float(rng.uniform(0, .011))
                 velocity = float(rng.uniform(.86, 1.06))
-                add_stereo(mix, percussion[instrument], (start + offset) * beat + swing, level * velocity, .34 if instrument == "hat" else 0)
+                add_stereo(rhythm_signal, percussion[instrument], (start + offset) * beat + swing, level * velocity, .34 if instrument == "hat" else 0)
         for index, offset in enumerate(groove["bass"]):
             bass = move_into_octave(root + (7 if index % 2 else 0), 35)
             sound = note(bass, beat * (.55 if style == "funk" else .84), "bass")
-            add_stereo(mix, sound, (start + offset) * beat, .235 if style in ("funk", "house") else .19)
+            add_stereo(bass_signal, sound, (start + offset) * beat, .235 if style in ("funk", "house") else .19)
         for offset in groove["chords"]:
             for index, pitch in enumerate(chord):
                 length = beat * (1.62 if chord_voice == "pad" else .91)
                 sound = note(pitch, length, chord_voice)
-                add_stereo(mix, sound, (start + offset) * beat + index * .009, .089, -.53 + index * .32)
+                add_stereo(melody_signal, sound, (start + offset) * beat + index * .009, .089, -.53 + index * .32)
         for index, offset in enumerate(groove["lead"]):
             degree = motif[(bar * 2 + index) % len(motif)]
             pitch = move_into_octave(root + intervals[degree % 4], 69)
@@ -164,8 +165,14 @@ def render(key, score, order):
             length = beat * (.92 if index == len(groove["lead"]) - 1 else .57)
             sound = note(pitch, length, lead_voice)
             position = (start + offset) * beat
-            add_stereo(mix, sound, position, .16, .13)
-            add_stereo(mix, sound, position + .167, .025, -.56)
+            add_stereo(melody_signal, sound, position, .16, .13)
+            add_stereo(melody_signal, sound, position + .167, .025, -.56)
+    return rhythm_signal, bass_signal, melody_signal
+
+
+def render(key, score, order):
+    seconds = BARS * 4 * (60 / score[0])
+    mix, _, _ = compose_score(score, order)
 
     # A short boundary fade avoids a click when the browser loops the clip.
     fade_in = round(.036 * RATE)
