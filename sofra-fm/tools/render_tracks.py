@@ -60,6 +60,22 @@ SCORES = {
     "cilek-feslegen-soda": (118, "house", "pluck", "vibes", [(54, MINOR), (57, MAJOR), (52, MAJOR), (56, SUS)], (3, 0, 2, 3, 1, 0, 4, 1)),
     "karpuz-nane": (106, "air", "rhodes", "pluck", [(53, MAJOR), (57, MINOR), (58, MAJOR), (55, MINOR)], (2, 0, 4, 3, 1, 2, 4, 0)),
     "meyve-tabagi": (111, "bossa", "nylon", "vibes", [(52, SIXTH), (54, MINOR), (59, DOMINANT), (57, MAJOR)], (1, 4, 2, 3, 4, 2, 0, 1)),
+    "espresso": (108, "swing", "rhodes", "vibes", [(57, MINOR), (62, MINOR), (64, DOMINANT), (57, SIXTH)], (0, 2, 4, 2, 3, 1, 0, 2)),
+    "americano": (88, "funk", "rhodes", "nylon", [(52, MINOR), (55, SIXTH), (57, MINOR), (59, DOMINANT)], (1, 0, 2, 4, 2, 3, 1, 0)),
+    "cappuccino": (96, "swing", "nylon", "vibes", [(53, MAJOR), (57, MINOR), (55, MINOR), (60, DOMINANT)], (2, 4, 1, 3, 2, 0, 3, 4)),
+    "bitter-mocha": (81, "swing", "rhodes", "nylon", [(51, MAJOR), (48, MINOR), (53, MINOR), (58, DOMINANT)], (4, 3, 1, 3, 0, 2, 4, 3)),
+    "buzlu-ispanyol-latte": (104, "bossa", "nylon", "pluck", [(55, MAJOR), (52, MINOR), (57, MINOR), (62, DOMINANT)], (2, 1, 4, 3, 2, 1, 3, 0)),
+    "espresso-tonik": (120, "house", "pluck", "vibes", [(55, MINOR), (58, SIXTH), (60, MINOR), (62, SUS)], (4, 1, 0, 2, 1, 3, 2, 3)),
+    "buzlu-findik-latte": (94, "broken", "rhodes", "pluck", [(49, MINOR), (52, MAJOR), (54, MINOR), (56, DOMINANT)], (2, 3, 0, 1, 4, 1, 2, 0)),
+    "cilekli-matcha-latte": (98, "air", "pad", "vibes", [(54, MAJOR), (58, MINOR), (56, MINOR), (59, MAJOR)], (0, 3, 4, 1, 2, 3, 4, 2)),
+    "bergamotlu-siyah-cay": (85, "bossa", "nylon", "vibes", [(50, MAJOR), (55, MAJOR), (52, MINOR), (57, SUS)], (4, 2, 1, 0, 3, 2, 0, 1)),
+    "balli-zencefil-cayi": (79, "air", "pad", "rhodes", [(57, MAJOR), (54, MINOR), (59, MINOR), (52, SUS)], (1, 0, 2, 3, 4, 2, 1, 3)),
+    "buzlu-seftali-cayi": (109, "bossa", "nylon", "vibes", [(51, MAJOR), (55, MINOR), (53, MINOR), (58, DOMINANT)], (3, 1, 0, 2, 4, 3, 1, 0)),
+    "yaban-mersinli-bubble-tea": (103, "air", "rhodes", "pluck", [(58, MAJOR), (55, MINOR), (51, MAJOR), (53, SUS)], (4, 0, 1, 3, 2, 0, 4, 2)),
+    "carkifelek-soda": (116, "bossa", "nylon", "vibes", [(52, SIXTH), (57, MAJOR), (54, MINOR), (59, DOMINANT)], (2, 4, 0, 1, 4, 3, 2, 1)),
+    "salatalik-murver-soda": (101, "bossa", "rhodes", "nylon", [(60, MAJOR), (55, SIXTH), (57, MINOR), (53, MAJOR)], (1, 3, 0, 4, 2, 1, 3, 2)),
+    "nar-greyfurt-kokteyli": (112, "funk", "pluck", "rhodes", [(53, MINOR), (56, MAJOR), (58, MINOR), (60, DOMINANT)], (3, 2, 4, 0, 1, 4, 2, 0)),
+    "fistikli-milkshake": (91, "broken", "rhodes", "vibes", [(55, MAJOR), (52, MINOR), (57, MINOR), (62, DOMINANT)], (0, 1, 4, 2, 1, 3, 4, 2)),
 }
 
 # Beat positions in a four-beat bar.

@@ -1,6 +1,6 @@
 # Sofra FM
 
-Her ürünün kendi müziği olan Türkçe ve İngilizce restoran menüsü. Başlangıçlar, ana yemekler, tatlılar, içecekler ve taze seçenekler beş görselli kategoride sunulur. Her kategoride sekiz ürün bulunur. 40 ürünün her birinin görseli ve özgün, kısa enstrümantal parçası vardır. Fiyatlar EUR cinsinden örnek menü verisidir. Menü araması iki dilde çalışır.
+Her ürünün kendi müziği olan Türkçe ve İngilizce restoran menüsü. İçecekler kategorisinde 24, başlangıçlar, ana yemekler, tatlılar ve taze seçenekler kategorilerinde sekizer ürün bulunur. 56 ürünün her birinin görseli ve özgün, kısa enstrümantal parçası vardır. Fiyatlar EUR cinsinden örnek menü verisidir. Menü araması iki dilde çalışır.
 
 ## Açma
 
@@ -18,7 +18,7 @@ Tarayıcıda `http://localhost:8080` adresini aç. İngilizce bir ürün bağlan
 - **Tadım seçkileri** bölümünde toplam fiyatı ve üç ürünün parça adlarını görebilirsin. **Seçkiyi dinle** ürünleri ve parçaları sırayla açar. Seçkinin bağlantısı ilgili kartı açar. Örnek bağlantı `?lang=tr&tasting=aksam-menusu#tasting-aksam-menusu`.
 - **Müzik tarzı** filtresi arama ve kategori seçimiyle birlikte çalışır.
 - **Vitrin modu** ürünleri dokuz saniyede bir döndürür. Müzik açıkken bir sonraki ürüne parça bittiğinde geçer. Ürün QR kodu web adresindeki ilgili menü kaydını açar. QR bağlantılarının erişimi, menünün yayın ayarına bağlıdır.
-- Ürün ayrıntılarında **Hikâye videosu** ile 12 saniyelik, 720 × 1280 boyutunda MP4 indirilebilir. 40 videonun her birinde ürüne ait görsel, fiyat ve müzik bulunur.
+- Ürün ayrıntılarında **Hikâye videosu** ile 12 saniyelik, 720 × 1280 boyutunda MP4 indirilebilir. 56 videonun her birinde ürüne ait görsel, fiyat ve müzik bulunur.
 
 ## Mutfak Mikseri
 
@@ -31,11 +31,11 @@ Köz Burger, Türk Kahvesi ve Naneli Limonata kartlarından açılır. **Karış
 - `tools/render_tracks.py` müzikleri ve dalga biçimi verisini yeniden oluşturur. Bu işlem Python, NumPy ve FFmpeg gerektirir. Menü sayfası statik çalışır.
 - `python tools/render_mixer.py` mikserin seslerini yeniden üretir. Python, NumPy, SciPy ve FFmpeg kullanır. Tarayıcı, ihtiyaç olduğunda sesleri `assets/mixer/` dizininden yükler. Mikser `index.html` doğrudan açıldığında da çalışır.
 - `python tools/render_stories.py` komutu videoları `assets/stories/` dizininde yeniden üretir. Python, Pillow, fontTools, Node.js ve FFmpeg kullanır. Tek ürün için `--product margherita` eklenebilir.
-- Depoda GitHub Pages kök klasörden yayınlanıyorsa menü `/sofra-fm/` yolunda açılır.
+- GitHub Pages için `gh-pages` dalının kökünde sitenin statik dosyaları bulunur. Menü kaynakları `main` dalında `sofra-fm/` klasöründedir.
 
 ## English
 
-Sofra FM is a bilingual restaurant menu with eight items in each of five illustrated categories. All 40 items have a product image, an original instrumental clip, and an illustrative EUR price. Search works in both languages. Open `index.html` in a browser or serve the folder with a static web server. Individual product URLs accept `lang` and `dish` query parameters.
+Sofra FM is a bilingual restaurant menu with 24 drinks and eight items in each of the other four categories. All 56 items have a product image, an original instrumental clip, and an illustrative EUR price. Search works in both languages. Open `index.html` in a browser or serve the folder with a static web server. Individual product URLs accept `lang` and `dish` query parameters.
 
 Tasting menus have their own links and sequence the original tracks. The music style filter works with the existing category filter and search. Display mode rotates through the dishes with a QR code linking to the current dish. Each dish has a downloadable 12-second portrait MP4.
 
