@@ -8,6 +8,39 @@ const sections = [
   { id: "fresh", cover: "mango-ananas", name: { tr: "Taze & ferah", en: "Fresh" } },
 ];
 
+const tastings = [
+  {
+    id: "aksam-menusu",
+    name: { tr: "Akşam Menüsü", en: "Dinner Tasting" },
+    dishes: ["margherita", "limonlu-tart", "turk-kahvesi"],
+  },
+  {
+    id: "kahve-molasi",
+    name: { tr: "Kahve Molası", en: "Coffee Break" },
+    dishes: ["fistikli-kruvasan", "tiramisu", "flat-white"],
+  },
+  {
+    id: "ferah-ogle",
+    name: { tr: "Ferah Öğle", en: "Fresh Lunch" },
+    dishes: ["izgara-hellim", "kinoa-kasesi", "naneli-limonata"],
+  },
+];
+
+const musicStyles = [
+  {
+    id: "jazz", name: { tr: "Caz", en: "Jazz" },
+    genres: ["Bossa nova", "Café jazz", "French jazz", "Garden jazz", "Late night jazz", "Soft jazz", "Soul jazz"],
+  },
+  {
+    id: "chill", name: { tr: "Lo-fi ve sakin", en: "Lo-fi & chill" },
+    genres: ["Ambient jazz", "Ambient pop", "Chillhop", "Downtempo", "Lo-fi funk", "Soft pop", "Soft soul"],
+  },
+  {
+    id: "upbeat", name: { tr: "Hareketli", en: "Upbeat" },
+    genres: ["Funk", "Minimal house", "Sunshine funk", "Tropical jazz"],
+  },
+];
+
 const products = [
   {
     id: "burrata", section: "starters", price: 5.50,

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="styles.css">
   <script defer src="menu-data.js"></script>
   <script defer src="assets/track-data.js"></script>
+  <script defer src="assets/vendor/qrcode.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
@@ -25,6 +26,7 @@
         <span>Sofra<span class="wordmark-fm">FM</span></span>
       </a>
       <div class="topbar-actions">
+        <a class="menu-link tastings-link" href="#tastings" data-copy="tastingsLink">Seçkiler</a>
         <a class="menu-link" href="#menu" data-copy="menuLink">Menü</a>
         <div class="language" role="group" data-label="language">
           <button type="button" data-lang="tr" lang="tr" aria-label="Türkçe" aria-pressed="true">TR</button>
@@ -45,7 +47,10 @@
         <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span><span data-copy="tagline">Menüyü dinle</span></p>
         <h1 id="dish-name">Köz Burger</h1>
         <p class="dish-detail" id="dish-detail">Köz ateşinde iki dana köfte, erimiş cheddar, turşu ve kavrulmuş brioche ekmek.</p>
-        <p class="dish-price" id="dish-price">€7,50</p>
+        <div class="dish-meta">
+          <p class="dish-price" id="dish-price">€7,50</p>
+          <a class="active-tasting" id="active-tasting" href="#tastings" hidden></a>
+        </div>
 
         <div class="player" id="player" role="group" data-label="player">
           <div class="player-track">
@@ -79,9 +84,20 @@
             <span id="dish-position" class="dish-position" aria-live="polite">09 / 40</span>
             <button type="button" id="next" class="arrow-button" data-label="next"><span aria-hidden="true">→</span></button>
           </div>
-          <button type="button" id="share" class="share-button"><span data-copy="share">Ürünü paylaş</span><span aria-hidden="true">↗</span></button>
+          <div class="feature-links">
+            <button type="button" id="share" class="share-button"><span data-copy="share">Ürünü paylaş</span><span aria-hidden="true">↗</span></button>
+            <a id="story" class="share-button" href="assets/stories/koz-burger.mp4" download="Sofra-FM-koz-burger.mp4"><span data-copy="story">Hikâye videosu</span><span aria-hidden="true">↓</span></a>
+          </div>
         </div>
       </div>
+    </section>
+
+    <section id="tastings" class="tasting-section" aria-labelledby="tasting-heading">
+      <div class="tasting-header">
+        <h2 id="tasting-heading" data-copy="tastings">Tadım seçkileri</h2>
+        <button type="button" id="open-showcase" class="filter-button" data-copy="openShowcase">Vitrin modu</button>
+      </div>
+      <div id="tasting-grid" class="tasting-grid"></div>
     </section>
 
     <section id="menu" class="menu-section" aria-labelledby="menu-heading">
@@ -96,6 +112,10 @@
             <input id="menu-search" type="search" placeholder="Menüde ara" data-label="search" autocomplete="off">
           </label>
           <button id="show-all" type="button" class="filter-button" data-filter="all" data-copy="all" aria-pressed="true">Tümü</button>
+          <label class="music-style-label">
+            <span data-copy="musicStyle">Müzik tarzı</span>
+            <select id="music-style"></select>
+          </label>
         </div>
       </div>
       <div id="filters" class="filters" role="group" data-label="categories"></div>
@@ -135,9 +155,67 @@
     </article>
   </template>
 
+  <template id="tasting-template">
+    <article class="tasting-card" tabindex="-1">
+      <div class="tasting-photos" aria-hidden="true"></div>
+      <div class="tasting-body">
+        <div class="tasting-title">
+          <h3></h3>
+          <span class="tasting-total"></span>
+        </div>
+        <ol class="tasting-dishes"></ol>
+        <div class="tasting-actions">
+          <button type="button" class="tasting-play">
+            <span class="play-icon" aria-hidden="true"></span><span class="tasting-play-label"></span>
+          </button>
+          <button type="button" class="share-button tasting-share"><span class="tasting-share-label"></span><span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <dialog id="showcase" class="showcase" aria-labelledby="showcase-title">
+    <div class="showcase-inner">
+      <header class="showcase-header">
+        <div class="wordmark" aria-label="Sofra FM">
+          <span class="brand-disc" aria-hidden="true"></span><span>Sofra<span class="wordmark-fm">FM</span></span>
+        </div>
+        <button type="button" id="showcase-close" class="showcase-control" data-copy="close" autofocus>Kapat</button>
+      </header>
+      <div class="showcase-stage">
+        <img id="showcase-photo" width="623" height="623" alt="">
+        <div class="showcase-content">
+          <p class="showcase-category" id="showcase-category"></p>
+          <h2 id="showcase-title"></h2>
+          <p class="showcase-price" id="showcase-price"></p>
+          <p class="showcase-track" id="showcase-track"></p>
+          <div id="showcase-qr" class="showcase-qr">
+            <canvas id="showcase-code" data-label="productQr" role="img"></canvas>
+            <a id="showcase-link" data-copy="openProduct">Ürünü aç</a>
+          </div>
+          <p id="showcase-offline" data-copy="qrOffline" hidden>QR kod için menüyü web adresinden açın.</p>
+          <p id="showcase-audio-error" role="status" data-copy="audioError" hidden></p>
+          <p id="showcase-fullscreen-error" role="status" data-copy="fullscreenError" hidden></p>
+        </div>
+      </div>
+      <div class="showcase-actions" role="group" data-label="showcaseControls">
+        <div class="showcase-navigation">
+          <button type="button" id="showcase-previous" class="showcase-control" data-label="previous"><span aria-hidden="true">←</span></button>
+          <span id="showcase-position" class="showcase-position"></span>
+          <button type="button" id="showcase-next" class="showcase-control" data-label="next"><span aria-hidden="true">→</span></button>
+        </div>
+        <div class="showcase-settings">
+          <button type="button" id="showcase-rotate" class="showcase-control"></button>
+          <button type="button" id="showcase-sound" class="showcase-control" data-copy="showcaseSound" aria-pressed="false">Müzik</button>
+          <button type="button" id="showcase-fullscreen" class="showcase-control" data-copy="fullscreen">Tam ekran</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="share-dialog" class="share-dialog">
     <form method="dialog">
-      <label for="share-url" data-copy="copyLabel">Ürün bağlantısı</label>
+      <label id="share-url-label" for="share-url">Ürün bağlantısı</label>
       <input id="share-url" type="url" readonly>
       <button type="submit" data-copy="close">Kapat</button>
     </form>
