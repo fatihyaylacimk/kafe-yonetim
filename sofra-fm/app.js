@@ -7,6 +7,7 @@
       player: "Müzik oynatıcı", seek: "Parça konumu", mute: "Sesi kapat", browse: "Ürünler arasında gezin",
       previous: "Önceki ürün", next: "Sonraki ürün", share: "Ürünü paylaş", menuHeading: "Tam menü",
       categories: "Menü kategorileri", all: "Tümü", count: number => number + " ürün", top: "Yukarı çık",
+      search: "Menüde ara", noItems: "Aramana uygun ürün bulunamadı.",
       openPlayer: "Oynatıcıyı aç", copyLabel: "Ürün bağlantısı", close: "Kapat",
       play: "Oynat", pause: "Duraklat", openDish: name => name + " ürün detayını aç",
       audioError: "Parça açılamadı. Tekrar oynatmayı dene.",
@@ -17,7 +18,8 @@
       skip: "Skip to the menu", menuLink: "Menu", language: "Language", tagline: "Listen to the menu",
       player: "Music player", seek: "Playback position", mute: "Mute audio", browse: "Browse dishes",
       previous: "Previous dish", next: "Next dish", share: "Share dish", menuHeading: "Full menu",
-      categories: "Menu categories", all: "All", count: number => number + " items", top: "Back to top",
+      categories: "Menu categories", all: "All", count: number => number + (number === 1 ? " item" : " items"), top: "Back to top",
+      search: "Search the menu", noItems: "No items match your search.",
       openPlayer: "Open music player", copyLabel: "Dish link", close: "Close",
       play: "Play", pause: "Pause", openDish: name => "Open details for " + name,
       audioError: "This track could not load. Try playing it again.",
@@ -67,6 +69,7 @@
   const state = {
     lang: validLanguage(initialLanguage) ? initialLanguage : (validLanguage(savedLanguage) ? savedLanguage : "tr"),
     filter: "all",
+    query: [],
     product: productById.get(start.get("dish")) || productById.get("koz-burger"),
     playerVisible: true,
   };
@@ -78,6 +81,8 @@
   const mute = byId("mute");
   const groups = byId("menu-groups");
   const filters = byId("filters");
+  const search = byId("menu-search");
+  const showAll = byId("show-all");
   const wave = byId("waveform");
   const dishImage = byId("dish-image");
   const featurePhoto = byId("feature-photo");
@@ -94,7 +99,21 @@
   const inLanguage = pair => pair[state.lang];
   const foodPath = id => "assets/food/" + id + ".webp";
   const audioPath = id => "assets/tracks/" + id + ".mp3";
-  const priceText = amount => new Intl.NumberFormat(state.lang === "tr" ? "tr-TR" : "en-GB").format(amount) + " MKD";
+  const currency = { style: "currency", currency: "EUR" };
+  const priceFormatters = {
+    tr: new Intl.NumberFormat("tr-TR", currency),
+    en: new Intl.NumberFormat("en-IE", currency),
+  };
+  const priceText = amount => priceFormatters[state.lang].format(amount);
+
+  function searchable(value) {
+    return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/\p{M}/gu, "").replaceAll("ı", "i");
+  }
+
+  const searchIndex = new Map(products.map(product => [
+    product.id,
+    searchable([product.name, product.detail, product.track].flatMap(pair => Object.values(pair)).join(" ")),
+  ]));
 
   function timing(seconds) {
     const rounded = Math.max(0, Math.floor(seconds));
@@ -151,6 +170,8 @@
     byId("track-genre").textContent = genre + " · " + product.bpm + " BPM";
     byId("mini-name").textContent = track;
     byId("mini-dish").textContent = name;
+    player.dataset.section = product.section;
+    mini.dataset.section = product.section;
     dishImage.alt = name;
     byId("dish-position").textContent = String(position).padStart(2, "0") + " / " + products.length;
     byId("dish-position").setAttribute("aria-label", text("position")(position, products.length));
@@ -269,13 +290,17 @@
     const parts = [];
     let count = 0;
     for (const section of visibleSections) {
+      const items = products.filter(product => product.section === section.id &&
+        state.query.every(word => searchIndex.get(product.id).includes(word)));
+      if (items.length === 0) {
+        continue;
+      }
       const group = document.createElement("section");
       group.className = "menu-group";
       const heading = document.createElement("h3");
       heading.textContent = inLanguage(section.name);
       const grid = document.createElement("div");
       grid.className = "product-grid";
-      const items = products.filter(product => product.section === section.id);
       grid.append(...items.map(createCard));
       group.append(heading, grid);
       parts.push(group);
@@ -283,11 +308,38 @@
     }
     groups.replaceChildren(...parts);
     byId("item-count").textContent = text("count")(count);
+    byId("menu-empty").hidden = count > 0;
+    showAll.setAttribute("aria-pressed", String(state.filter === "all"));
     filters.querySelectorAll("button").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.filter === state.filter));
     });
     syncSelectedCard();
     syncPlayback();
+  }
+
+  function createCategoryTile(section) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "category-tile";
+    button.dataset.filter = section.id;
+    const image = document.createElement("img");
+    image.src = foodPath(section.cover);
+    image.alt = "";
+    image.width = 623;
+    image.height = 623;
+    image.loading = "lazy";
+    image.decoding = "async";
+    const label = document.createElement("span");
+    label.className = "category-label";
+    label.textContent = inLanguage(section.name);
+    const count = document.createElement("span");
+    count.className = "category-count";
+    count.textContent = text("count")(products.filter(product => product.section === section.id).length);
+    const caption = document.createElement("span");
+    caption.className = "category-caption";
+    caption.append(label, count);
+    button.append(image, caption);
+    return button;
   }
 
   function renderLanguage() {
@@ -301,20 +353,17 @@
     document.querySelectorAll("[data-lang]").forEach(button => {
       button.setAttribute("aria-pressed", String(button.dataset.lang === state.lang));
     });
-    const choices = [{ id: "all", label: text("all") }, ...sections.map(section => ({
-      id: section.id,
-      label: inLanguage(section.name),
-    }))];
-    filters.replaceChildren(...choices.map(choice => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "filter-button";
-      button.dataset.filter = choice.id;
-      button.textContent = choice.label;
-      return button;
-    }));
+    search.placeholder = text("search");
+    filters.replaceChildren(...sections.map(createCategoryTile));
     setProductCopy();
     renderMenu();
+  }
+
+  function selectFilter(filter) {
+    if (state.filter !== filter) {
+      state.filter = filter;
+      renderMenu();
+    }
   }
 
   function notify(message) {
@@ -372,10 +421,15 @@
   }));
   filters.addEventListener("click", event => {
     const button = event.target.closest("[data-filter]");
-    if (button && state.filter !== button.dataset.filter) {
-      state.filter = button.dataset.filter;
-      renderMenu();
+    if (button) {
+      selectFilter(button.dataset.filter);
     }
+  });
+  showAll.addEventListener("click", () => selectFilter("all"));
+  search.addEventListener("input", () => {
+    const query = searchable(search.value).trim();
+    state.query = query ? query.split(/\s+/) : [];
+    renderMenu();
   });
   groups.addEventListener("click", event => {
     const button = event.target.closest("button");

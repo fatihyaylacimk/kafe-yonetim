@@ -45,7 +45,7 @@
         <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span><span data-copy="tagline">Menüyü dinle</span></p>
         <h1 id="dish-name">Köz Burger</h1>
         <p class="dish-detail" id="dish-detail">Köz ateşinde iki dana köfte, erimiş cheddar, turşu ve kavrulmuş brioche ekmek.</p>
-        <p class="dish-price" id="dish-price">460 MKD</p>
+        <p class="dish-price" id="dish-price">€7,50</p>
 
         <div class="player" id="player" role="group" data-label="player">
           <div class="player-track">
@@ -76,7 +76,7 @@
         <div class="feature-actions">
           <div class="dish-navigation" role="group" data-label="browse">
             <button type="button" id="previous" class="arrow-button" data-label="previous"><span aria-hidden="true">←</span></button>
-            <span id="dish-position" class="dish-position" aria-live="polite">05 / 20</span>
+            <span id="dish-position" class="dish-position" aria-live="polite">09 / 40</span>
             <button type="button" id="next" class="arrow-button" data-label="next"><span aria-hidden="true">→</span></button>
           </div>
           <button type="button" id="share" class="share-button"><span data-copy="share">Ürünü paylaş</span><span aria-hidden="true">↗</span></button>
@@ -86,11 +86,21 @@
 
     <section id="menu" class="menu-section" aria-labelledby="menu-heading">
       <div class="menu-title-row">
-        <h2 id="menu-heading" data-copy="menuHeading">Tam menü</h2>
-        <span id="item-count" class="item-count" aria-live="polite"></span>
+        <div class="menu-title">
+          <h2 id="menu-heading" data-copy="menuHeading">Tam menü</h2>
+          <span id="item-count" class="item-count" aria-live="polite"></span>
+        </div>
+        <div class="menu-controls">
+          <label class="search-box">
+            <span class="search-icon" aria-hidden="true"></span>
+            <input id="menu-search" type="search" placeholder="Menüde ara" data-label="search" autocomplete="off">
+          </label>
+          <button id="show-all" type="button" class="filter-button" data-filter="all" data-copy="all" aria-pressed="true">Tümü</button>
+        </div>
       </div>
       <div id="filters" class="filters" role="group" data-label="categories"></div>
       <div id="menu-groups"></div>
+      <p id="menu-empty" class="menu-empty" data-copy="noItems" hidden>Aramana uygun ürün bulunamadı.</p>
       <noscript><p>Menüyü açmak için JavaScript’i etkinleştirin. Enable JavaScript to open the menu.</p></noscript>
     </section>
 

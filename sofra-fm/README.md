@@ -1,6 +1,6 @@
 # Sofra FM
 
-Her ürünün kendi müziği olan Türkçe ve İngilizce restoran menüsü. Başlangıçlar, ana yemekler, tatlılar, içecekler ve taze seçenekler beş kategoride sunulur. 20 ürünün her birinin görseli ve özgün, kısa enstrümantal parçası vardır. Ürünler ve MKD fiyatları örnek menü verisidir.
+Her ürünün kendi müziği olan Türkçe ve İngilizce restoran menüsü. Başlangıçlar, ana yemekler, tatlılar, içecekler ve taze seçenekler beş görselli kategoride sunulur. Her kategoride sekiz ürün bulunur. 40 ürünün her birinin görseli ve özgün, kısa enstrümantal parçası vardır. Fiyatlar EUR cinsinden örnek menü verisidir. Menü araması iki dilde çalışır.
 
 ## Açma
 
@@ -22,6 +22,6 @@ Tarayıcıda `http://localhost:8080` adresini aç. İngilizce bir ürün bağlan
 
 ## English
 
-Sofra FM is a bilingual restaurant menu with five categories, 20 product images, and 20 original instrumental clips. The menu and MKD prices are illustrative. Open `index.html` in a browser or serve the folder with a static web server. Individual product URLs accept `lang` and `dish` query parameters.
+Sofra FM is a bilingual restaurant menu with eight items in each of five illustrated categories. All 40 items have a product image, an original instrumental clip, and an illustrative EUR price. Search works in both languages. Open `index.html` in a browser or serve the folder with a static web server. Individual product URLs accept `lang` and `dish` query parameters.
 
 The food visuals were generated for this demo. Instrument Serif and DM Sans are distributed under their respective SIL Open Font Licenses, included in `assets/fonts/`.
